@@ -155,37 +155,40 @@ end
 -- Mouse input
 
 hook.Add("KeyPress", "VGUI3D2DMousePress", function(_, key)
-	if key == IN_USE then
-		for pnl in pairs(inputWindows) do
-			if IsValid(pnl) then
-				origin = pnl.Origin
-				scale = pnl.Scale
-				angle = pnl.Angle
-				normal = pnl.Normal
+	if key ~= IN_USE then return end
+	if not IsFirstTimePredicted() then return end
+	
 
-				local key = input.IsKeyDown(KEY_LSHIFT) and MOUSE_RIGHT or MOUSE_LEFT
-				
-				postPanelEvent(pnl, "OnMousePressed", key)
-			end
+	for pnl in pairs(inputWindows) do
+		if IsValid(pnl) then
+			origin = pnl.Origin
+			scale = pnl.Scale
+			angle = pnl.Angle
+			normal = pnl.Normal
+
+			local key = input.IsKeyDown(KEY_LSHIFT) and MOUSE_RIGHT or MOUSE_LEFT
+			
+			postPanelEvent(pnl, "OnMousePressed", key)
 		end
 	end
 end)
 
 hook.Add("KeyRelease", "VGUI3D2DMouseRelease", function(_, key)
-	if key == IN_USE then
-		for pnl, key in pairs(usedpanel) do
-			if IsValid(pnl) then
-				origin = pnl.Origin
-				scale = pnl.Scale
-				angle = pnl.Angle
-				normal = pnl.Normal
+	if key ~= IN_USE then return end
+	if not IsFirstTimePredicted() then return end
 
-				if pnl["OnMouseReleased"] then
-					pnl["OnMouseReleased"](pnl, key[1])
-				end
+	for pnl, key in pairs(usedpanel) do
+		if IsValid(pnl) then
+			origin = pnl.Origin
+			scale = pnl.Scale
+			angle = pnl.Angle
+			normal = pnl.Normal
 
-				usedpanel[pnl] = nil
+			if pnl["OnMouseReleased"] then
+				pnl["OnMouseReleased"](pnl, key[1])
 			end
+
+			usedpanel[pnl] = nil
 		end
 	end
 end)
